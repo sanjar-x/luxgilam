@@ -1,7 +1,4 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-import logging
-
-from aiogram.utils.callback_data import CallbackData
 from loader import db
 
 
