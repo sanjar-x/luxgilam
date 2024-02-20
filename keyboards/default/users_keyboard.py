@@ -20,7 +20,7 @@ users_keyboard = ReplyKeyboardMarkup(
 send_contact = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='Contact', request_contact=True),
+            KeyboardButton(text='📱 Контактимни улашиш 📱', request_contact=True),
         ]
     ], resize_keyboard=True
 )
