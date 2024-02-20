@@ -10,7 +10,7 @@ def validate_image_size(value):
     except Exception as e:
         raise ValidationError("Kechirasiz bu Fayl rasm emas, Iltimos Rasm kiriting!")
 
-    max_size = 20 * 1024 * 1024
+    max_size = 7 * 1024 * 1024
     if value.size > max_size:
         raise ValidationError("Fayl hajmi ko'pi bilan 10 MB bo'lishi mumkin!")
 

@@ -17,14 +17,6 @@ users_keyboard = ReplyKeyboardMarkup(
 )
 
 
-exit_btn = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton('❌')
-        ]
-    ], resize_keyboard=True
-)
-
 send_contact = ReplyKeyboardMarkup(
     keyboard=[
         [
