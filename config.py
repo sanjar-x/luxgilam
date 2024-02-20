@@ -1,0 +1,7 @@
+BOT_TOKEN = "6421640303:AAHcF7fRB6_u_RIApqGIuUQDCeAa33BP_3w"
+ADMINS = []
+DB_USER = 'postgres'
+DB_PASSWORD = '1'
+DB_HOST = 'localhost'
+DB_PORT = 5432
+DB_NAME = 'yes_db'
