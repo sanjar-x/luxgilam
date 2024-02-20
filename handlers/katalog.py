@@ -2,7 +2,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 from states.user_state import BoglanishState, BoshqaRazmer
 from keyboards.default.users_keyboard import send_contact, users_keyboard, exit_btn
-from keyboards.inline.katalog_inline import category_keyboard
+from keyboards.inline.katalog_inline import category_keyboard, muddatli_tolov
 from loader import dp, db, BASE, bot
 
 
@@ -85,8 +85,15 @@ async def callback_handler(callback: types.CallbackQuery, state: FSMContext):
         async with state.proxy() as data:
             data['media_id'] = index
             data['sub_id'] = id
+            data['n'] = n
         await BoshqaRazmer.boyi.set()
         await callback.message.answer(text="Гилам бойини киритинг ✍️", reply_markup=exit_btn)
+        return
+    elif text[0] == 'muddat':
+        if stories[n - 1][-3] == True:
+            await callback.message.answer_photo(photo=open(f"{BASE}/admin/media/{stories[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {stories[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {stories[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {stories[n - 1][4]} x {stories[n - 1][5]}\n<b>Нархи:</b> {stories[n - 1][4] * stories[n - 1][5] * sub_data[-2]} сум\n\nНасия Савдо Мавжуд ✅", reply_markup=await muddatli_tolov(stories[n - 1][0], id), parse_mode="HTML")
+        elif stories[n - 1][-3] == False:
+            await callback.message.answer_photo(photo=open(f"{BASE}/admin/media/{stories[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {stories[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {stories[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {stories[n - 1][4]} x {stories[n - 1][5]}\n<b>Нархи:</b> {stories[n - 1][4] * stories[n - 1][5] * sub_data[-2]} сум\n\nНасия Савдо Мавжуд Емас ❌", reply_markup=await muddatli_tolov(stories[n - 1][0], id), parse_mode="HTML")
         return
     elif text[0] == 'next':
         n = int(text[1])
@@ -103,6 +110,19 @@ async def callback_handler(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer(str(f"📑 Siz shu sahifadasiz: {n}"))
 
 
+@dp.callback_query_handler(lambda call: call.data.split('_')[0] == "time")
+async def time_query_handler(callback: types.CallbackQuery):
+    await callback.message.delete()
+    lifetime = callback.data.split('_')[1]
+    time_id = callback.data.split('_')[2]
+    sub_id = callback.data.split('_')[3]
+    product = await db.get_products(int(time_id))
+    sub = await db.get_products_sub(int(sub_id))
+    if product:
+        narx = (product[4] * product[5] * sub[-2]) / int(lifetime)
+        await callback.message.answer(f"Product {lifetime} oyli muddatli to'lovga olish uchun har oyda {narx} сум")
+   
+
 @dp.message_handler(state=BoshqaRazmer.boyi)
 async def boshqa_razmer_boyi_handler(message: types.Message, state: FSMContext):
     if message.text == "❌":
@@ -117,35 +137,34 @@ async def boshqa_razmer_boyi_handler(message: types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['boy'] = boy
             await BoshqaRazmer.eni.set()
-            await message.answer("Гилам энини киритинг ✍️", reply_markup=exit_btn)
+            await message.answer("Гилам энини киритинг ✍️", reply_markup=users_keyboard)
 
 
 @dp.message_handler(state=BoshqaRazmer.eni)
 async def boshqa_razmer_eni_handler(message: types.Message, state: FSMContext):
-    if message.text == "❌":
-        await state.finish()
-        await message.answer("Бошқа размер танлаш бекор қилинди ❌", reply_markup=users_keyboard)
+    try:
+        eni = float(message.text)
+    except:
+        await message.answer("Илтимос рақам киритинг ♻️")
     else:
-        try:
-            eni = float(message.text)
-        except:
-            await message.answer("Илтимос рақам киритинг ♻️")
-        else:
-            async with state.proxy() as datas:
-                sub_data = await db.get_products_sub(int(datas['sub_id']))
-                n = 1
-                data = await db.get_product(int(datas['sub_id']))
-                boshqa_razmer = types.InlineKeyboardButton("🛠 Бошқа размер ⚙️", callback_data=f"razmer_{n}_{datas['sub_id']}_{data[n - 1][0]}")
-                muddat = types.InlineKeyboardButton("⏳ Муддатли толов ⏳", callback_data=f"muddat_{n}_{datas['sub_id']}_{data[n - 1][0]}")
-                end = types.InlineKeyboardButton('🔙', callback_data=f"back_{len(data) if n == 1 else n - 1}_{datas['sub_id']}")
-                work = types.InlineKeyboardButton('💳 Сотиб Олиш 💸', callback_data=f"work_{n}_{datas['sub_id']}_{data[n - 1][0]}")
-                next = types.InlineKeyboardButton('🔜', callback_data=f"next_{1 if n == len(data) else n + 1}_{datas['sub_id']}")
-                btn = types.InlineKeyboardMarkup(inline_keyboard=[[work], [boshqa_razmer], [muddat], [end, next]])
-                if data[n - 1][-1] == True:
-                    await message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {datas['boy']} x {eni}\n<b>Нархи:</b> {float(datas['boy']) * eni * sub_data[-2]} сум\n\nНасия Савдо Мавжуд ✅", reply_markup=btn, parse_mode="HTML")
-                elif data[n - 1][-1] == False:
-                    await message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {datas['boy']} x {eni}\n<b>Нархи:</b> {float(datas['boy']) * eni * sub_data[-2]} сум\n\nНасия Савдо Мавжуд Емас ❌", reply_markup=btn, parse_mode="HTML")
-            await state.finish()
+        async with state.proxy() as datas:
+            sub_id = datas['sub_id']
+            product_id = datas['media_id']
+            n = datas['n']
+        sub_data = await db.get_products_sub(int(sub_id))
+        data = await db.get_product(int(sub_id))
+        product = await db.get_products(int(product_id))
+        boshqa_razmer = types.InlineKeyboardButton("🛠 Бошқа размер ⚙️", callback_data=f"razmer_{n}_{datas['sub_id']}_{product[0]}")
+        muddat = types.InlineKeyboardButton("⏳ Муддатли толов ⏳", callback_data=f"muddat_{n}_{datas['sub_id']}_{product[0]}")
+        end = types.InlineKeyboardButton('🔙', callback_data=f"back_{len(data) if n == 1 else n - 1}_{datas['sub_id']}")
+        work = types.InlineKeyboardButton('💳 Сотиб Олиш 💸', callback_data=f"work_{n}_{datas['sub_id']}_{product[0]}")
+        next = types.InlineKeyboardButton('🔜', callback_data=f"next_{1 if n == len(data) else n + 1}_{datas['sub_id']}")
+        btn = types.InlineKeyboardMarkup(inline_keyboard=[[work], [boshqa_razmer], [muddat], [end, next]])
+        if product[-1] == True:
+            await message.answer_photo(photo=open(f"{BASE}/admin/media/{product[1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {product[2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {product[3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {datas['boy']} x {eni}\n<b>Нархи:</b> {float(datas['boy']) * eni * sub_data[-2]} сум\n\nНасия Савдо Мавжуд ✅", reply_markup=btn, parse_mode="HTML")
+        elif product[-1] == False:
+            await message.answer_photo(photo=open(f"{BASE}/admin/media/{product[1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {product[2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {product[3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {datas['boy']} x {eni}\n<b>Нархи:</b> {float(datas['boy']) * eni * sub_data[-2]} сум\n\nНасия Савдо Мавжуд Емас ❌", reply_markup=btn, parse_mode="HTML")
+        await state.finish()
 
 
 @dp.message_handler(state=BoglanishState.phone, content_types=types.ContentType.CONTACT)
