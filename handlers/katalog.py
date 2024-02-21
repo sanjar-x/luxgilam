@@ -121,7 +121,10 @@ async def time_query_handler(callback: types.CallbackQuery):
     product = await db.get_products(int(time_id))
     sub = await db.get_products_sub(int(sub_id))
     if product:
-        narx = (product[4] * product[5] * sub[-2]) / int(lifetime)
+        kvadrat = (product[4] * product[5])
+        one_foiz = sub[-2] / 100
+        oylik_koeffitsient = lifetime / 3
+        narx = ((one_foiz * (8 * oylik_koeffitsient) + sub[-2]) * kvadrat) / lifetime
         await callback.message.answer(f"Махсулотни <b>{lifetime}</b> ойлик муддатли тўловга харид қилсангиз ҳар ой <b>{narx}</b> сўмдан тўлашингиз керак бўлади!")
    
 
@@ -135,7 +138,7 @@ async def boshqa_razmer_boyi_handler(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['boy'] = boy
         await BoshqaRazmer.eni.set()
-        await message.answer("Гилам энини киритинг ✍️", reply_markup=users_keyboard)
+        await message.answer("Гилам энини киритинг ✍️")
 
 
 @dp.message_handler(state=BoshqaRazmer.eni)
