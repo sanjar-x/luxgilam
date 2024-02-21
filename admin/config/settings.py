@@ -94,11 +94,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": "Yec",
+    "site_title": "LuxGilam",
 
-    "site_header": "Yec",
+    "site_header": "LuxGilam",
 
-    "site_brand": "Yec",
+    "site_brand": "LuxGilam",
 
     "site_logo": None,
 
@@ -110,9 +110,9 @@ JAZZMIN_SETTINGS = {
 
     "site_icon": None,
 
-    "welcome_sign": "Welcome to the Yec",
+    "welcome_sign": "Welcome to the LuxGilam",
 
-    "copyright": "Yec MCHJ",
+    "copyright": "LuxGilam MCHJ",
 
     "search_model": ['auth.User', 'products.Product'],
 
