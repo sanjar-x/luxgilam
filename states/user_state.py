@@ -7,3 +7,6 @@ class BoglanishState(StatesGroup):
 class BoshqaRazmer(StatesGroup):
     boyi = State()
     eni = State()
+
+class MuddatBoglanish(StatesGroup):
+    phone = State()
