@@ -12,13 +12,13 @@ async def category_keyboard():
             ))
     return markup
 
-async def muddatli_tolov(product_id, sub_id):
+async def muddatli_tolov(product_id, sub_id, boy, eni):
     makrup = InlineKeyboardMarkup(row_width=1)
     makrup.add(
-        InlineKeyboardButton("📊 3 ойга болиб толаш 📊", callback_data=f"time_3_{product_id}_{sub_id}"),
-        InlineKeyboardButton("📊 6 ойга болиб толаш 📊", callback_data=f"time_6_{product_id}_{sub_id}"),
-        InlineKeyboardButton("📊 9 ойга болиб толаш 📊", callback_data=f"time_9_{product_id}_{sub_id}"),
-        InlineKeyboardButton("📊 12 ойга болиб толаш 📊", callback_data=f"time_12_{product_id}_{sub_id}")
+        InlineKeyboardButton("📊 3 ойга болиб толаш 📊", callback_data=f"time_3_{product_id}_{sub_id}_{boy}_{eni}"),
+        InlineKeyboardButton("📊 6 ойга болиб толаш 📊", callback_data=f"time_6_{product_id}_{sub_id}_{boy}_{eni}"),
+        InlineKeyboardButton("📊 9 ойга болиб толаш 📊", callback_data=f"time_9_{product_id}_{sub_id}_{boy}_{eni}"),
+        InlineKeyboardButton("📊 12 ойга болиб толаш 📊", callback_data=f"time_12_{product_id}_{sub_id}_{boy}_{eni}")
     )
     return makrup
 
