@@ -51,9 +51,9 @@ async def product_katalog_inline(call: types.CallbackQuery):
             await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {data[n - 1][4]} x {data[n - 1][5]}\n<b>Нархи:</b> {format_price(data[n - 1][4] * data[n - 1][5] * sub_data[-2])} сум\n\nНасия Савдо Мавжуд Емас ❌", reply_markup=btn, parse_mode="HTML")
 
     elif data and len(data) == 1:
-        boshqa_razmer = types.InlineKeyboardButton("🛠 Бошқа размер ⚙️", callback_data=f"razmer_{n}_{id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}")
-        muddat = types.InlineKeyboardButton("⏳ Муддатли толов ⏳", callback_data=f"muddat_{n}_{id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}")
-        work = types.InlineKeyboardButton('💳 Сотиб Олиш 💸', callback_data=f'work_{n}_{id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}')
+        boshqa_razmer = types.InlineKeyboardButton("🛠 Бошқа размер ⚙️", callback_data=f"razmer_{n}_{_id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}")
+        muddat = types.InlineKeyboardButton("⏳ Муддатли толов ⏳", callback_data=f"muddat_{n}_{_id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}")
+        work = types.InlineKeyboardButton('💳 Сотиб Олиш 💸', callback_data=f'work_{n}_{_id}_{data[n - 1][0]}_{data[n - 1][4]}_{data[n - 1][5]}')
         btn_work = types.InlineKeyboardMarkup(inline_keyboard=[[boshqa_razmer], [work], [muddat]])
         if data[n - 1][-3] == True:
             await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'), caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {data[n - 1][4]} x {data[n - 1][5]}\n<b>Нархи:</b> {format_price(data[n - 1][4] * data[n - 1][5] * sub_data[-2])} сум\n\nНасия Савдо Мавжуд ✅", reply_markup=btn_work, parse_mode="HTML")
